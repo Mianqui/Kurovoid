@@ -1,0 +1,65 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Panel{% endblock %}
+
+{% block content %}
+<h1 class="font-['Space_Grotesk'] text-2xl font-bold mb-8">Panel de control</h1>
+
+{% comment %}Tarjetas de métricas{% endcomment %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <p class="text-zinc-500 text-sm mb-1">Total productos</p>
+        <p class="text-3xl font-bold font-['Space_Grotesk']">{{ total_products }}</p>
+    </div>
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <p class="text-zinc-500 text-sm mb-1">Categorías</p>
+        <p class="text-3xl font-bold font-['Space_Grotesk']">{{ total_categories }}</p>
+    </div>
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <p class="text-zinc-500 text-sm mb-1">Sin stock</p>
+        <p class="text-3xl font-bold font-['Space_Grotesk'] text-red-400">{{ out_of_stock }}</p>
+    </div>
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <p class="text-zinc-500 text-sm mb-1">Stock bajo (≤3)</p>
+        <p class="text-3xl font-bold font-['Space_Grotesk'] text-amber-400">{{ low_stock }}</p>
+    </div>
+</div>
+
+{% comment %}Últimos productos{% endcomment %}
+<h2 class="font-['Space_Grotesk'] text-lg font-semibold mb-4">Últimos productos</h2>
+<div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+    <table class="w-full text-sm">
+        <thead>
+            <tr class="border-b border-zinc-800 text-zinc-500 text-left">
+                <th class="px-5 py-3 font-medium">Producto</th>
+                <th class="px-5 py-3 font-medium">Categoría</th>
+                <th class="px-5 py-3 font-medium">Precio</th>
+                <th class="px-5 py-3 font-medium">Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in latest_products %}
+            <tr class="border-b border-zinc-800 last:border-0 hover:bg-zinc-800/50 transition-colors">
+                <td class="px-5 py-3 font-medium">{{ p.name }}</td>
+                <td class="px-5 py-3 text-zinc-400">{{ p.category.name }}</td>
+                <td class="px-5 py-3">${{ p.price }}</td>
+                <td class="px-5 py-3">
+                    {% if p.stock == 0 %}
+                    <span class="text-red-400">Sin stock</span>
+                    {% elif p.stock <= 3 %}
+                    <span class="text-amber-400">{{ p.stock }}</span>
+                    {% else %}
+                    <span class="text-emerald-400">{{ p.stock }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="px-5 py-8 text-center text-zinc-500">No hay productos aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
