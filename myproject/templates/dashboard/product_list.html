@@ -6,9 +6,17 @@
 {% block content %}
 <div class="flex items-center justify-between mb-6">
     <h1 class="font-['Space_Grotesk'] text-2xl font-bold">Productos</h1>
-    <a href="{% url 'dashboard:product_create' %}" class="bg-white text-black px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-100 transition-colors">
-        + Añadir producto
-    </a>
+    <div class="flex items-center gap-2">
+        <a href="{% url 'dashboard:export_productos' %}" class="px-3 py-2 border border-zinc-700 text-zinc-300 rounded-lg text-sm hover:bg-zinc-800 transition-colors inline-flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            CSV
+        </a>
+        <a href="{% url 'dashboard:product_create' %}" class="bg-white text-black px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-100 transition-colors">
+            + Añadir producto
+        </a>
+    </div>
 </div>
 
 {% comment %}Buscador{% endcomment %}

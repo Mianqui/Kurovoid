@@ -3,56 +3,8 @@
 
 {% block title %}Tienda{% endblock %}
 
-{% block sidebar_filters %}
-<form method="get" class="space-y-5">
-    <div>
-        <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Categoría</label>
-        <select name="category" class="w-full px-3 py-2 text-sm rounded" style="background-color: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary);">
-            <option value="">Todas</option>
-            {% for cat in categories %}
-            <option value="{{ cat.slug }}" {% if selected.category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div>
-        <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Talla</label>
-        <div class="flex flex-wrap gap-2">
-            {% for size in sizes %}
-            <label class="flex items-center gap-1.5 text-sm" style="color: var(--text-secondary);">
-                <input type="checkbox" name="size" value="{{ size.name }}" {% if selected.size == size.name %}checked{% endif %} class="rounded" style="background-color: var(--bg-primary); border-color: var(--border);">
-                {{ size.name }}
-            </label>
-            {% endfor %}
-        </div>
-    </div>
-    <div>
-        <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Color</label>
-        <div class="flex flex-wrap gap-2">
-            {% for color in colors %}
-            <label class="flex items-center gap-1.5 text-sm" style="color: var(--text-secondary);">
-                <input type="checkbox" name="color" value="{{ color.name }}" {% if selected.color == color.name %}checked{% endif %} class="rounded" style="background-color: var(--bg-primary); border-color: var(--border);">
-                {{ color.name }}
-            </label>
-            {% endfor %}
-        </div>
-    </div>
-    <div>
-        <label class="block text-xs font-medium mb-1.5" style="color: var(--text-secondary);">Precio</label>
-        <div class="flex gap-2 items-center">
-            <input type="number" name="min_price" placeholder="Desde" value="{{ selected.min_price }}" class="w-full px-3 py-2 text-sm rounded" style="background-color: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary);">
-            <span style="color: var(--text-secondary);">-</span>
-            <input type="number" name="max_price" placeholder="Hasta" value="{{ selected.max_price }}" class="w-full px-3 py-2 text-sm rounded" style="background-color: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary);">
-        </div>
-    </div>
-    <button type="submit" class="w-full py-2 text-sm font-medium rounded theme-accent-bg transition-opacity hover:opacity-80">
-        Filtrar
-    </button>
-    <a href="{% url 'catalog:product_list' %}" class="block text-center text-sm transition-colors hover:opacity-80" style="color: var(--text-secondary);">Limpiar filtros</a>
-</form>
-{% endblock %}
-
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center justify-between mb-8">
         <h1 class="font-['Space_Grotesk'] text-3xl font-bold">Productos</h1>
         <button id="mobileFilterBtn" class="lg:hidden px-4 py-2 text-sm font-medium rounded theme-accent-bg transition-opacity hover:opacity-80">
@@ -61,7 +13,7 @@
     </div>
 
     {% if products %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         {% for product in products %}
         <a href="{% url 'catalog:product_detail' product.slug %}" class="group relative overflow-hidden transition-all" style="border: 1px solid var(--border);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
             <div class="aspect-[3/4] flex items-center justify-center" style="background-color: var(--bg-secondary);">
@@ -69,7 +21,7 @@
                 <img src="{% if main_image %}{{ main_image.image.url }}{% else %}{% static 'img/producto-card.jpg' %}{% endif %}" alt="{{ main_image.alt_text|default:product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 {% endwith %}
             </div>
-            <div class="p-4">
+            <div class="p-3 sm:p-4">
                 <h3 class="font-['Space_Grotesk'] font-medium text-sm tracking-wide">{{ product.name }}</h3>
                 <p class="text-sm mt-1" style="color: var(--text-secondary);">${{ product.price }}</p>
             </div>

@@ -62,6 +62,13 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
         context["images"] = product.images.all()
+        context["categories"] = Category.objects.all()
+        context["sizes"] = Size.objects.all()
+        context["colors"] = Color.objects.all()
+        context["price_range"] = Product.objects.filter(is_active=True).aggregate(
+            min_price=Min("price"), max_price=Max("price")
+        )
+        context["selected"] = {}
         # Productos de la misma categoría (excluyendo el actual)
         context["related_products"] = Product.objects.filter(
             category=product.category, is_active=True
@@ -87,6 +94,13 @@ class CategoryView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["category"] = self.get_category()
+        context["categories"] = Category.objects.all()
+        context["sizes"] = Size.objects.all()
+        context["colors"] = Color.objects.all()
+        context["price_range"] = Product.objects.filter(is_active=True).aggregate(
+            min_price=Min("price"), max_price=Max("price")
+        )
+        context["selected"] = {}
         return context
 
 
@@ -97,6 +111,14 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
+        context["sizes"] = Size.objects.all()
+        context["colors"] = Color.objects.all()
+        context["price_range"] = Product.objects.filter(is_active=True).aggregate(
+            min_price=Min("price"), max_price=Max("price")
+        )
+        context["selected"] = {
+            k: v for k, v in self.request.GET.items() if v
+        }
         context["new_products"] = Product.objects.filter(is_active=True).order_by(
             "-created_at"
         )[:8]

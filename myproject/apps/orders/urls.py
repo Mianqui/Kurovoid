@@ -9,4 +9,5 @@ urlpatterns = [
     path("agregar/<int:product_id>/", views.cart_add, name="cart_add"),  # /pedidos/agregar/<id>/
     path("quitar/<int:product_id>/", views.cart_remove, name="cart_remove"),  # /pedidos/quitar/<id>/
     path("update/<int:product_id>/", views.cart_update, name="cart_update"),  # /pedidos/update/<id>/
+    path("checkout/", views.CheckoutView.as_view(), name="checkout"),         # /pedidos/checkout/
 ]

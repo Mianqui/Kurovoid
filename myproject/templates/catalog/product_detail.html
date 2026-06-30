@@ -4,7 +4,7 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full px-4 sm:px-6 lg:px-8 py-8">
     <nav class="text-sm mb-8" style="color: var(--text-secondary);">
         <a href="{% url 'catalog:product_list' %}" class="transition-colors hover:opacity-80">Tienda</a>
         <span class="mx-2">/</span>
@@ -92,7 +92,7 @@
     {% if related_products %}
     <section class="mt-20">
         <h2 class="font-['Space_Grotesk'] text-2xl font-bold mb-6">También te puede gustar</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
             {% for related in related_products %}
             <a href="{% url 'catalog:product_detail' related.slug %}" class="group relative overflow-hidden transition-all" style="border: 1px solid var(--border);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
                 <div class="aspect-[3/4] flex items-center justify-center" style="background-color: var(--bg-secondary);">
@@ -100,9 +100,9 @@
                     <img src="{% if main_image %}{{ main_image.image.url }}{% else %}{% static 'img/producto-card.jpg' %}{% endif %}" alt="{{ main_image.alt_text|default:related.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     {% endwith %}
                 </div>
-                <div class="p-3">
-                    <h3 class="font-['Space_Grotesk'] font-medium text-xs tracking-wide">{{ related.name }}</h3>
-                    <p class="text-xs mt-1" style="color: var(--text-secondary);">${{ related.price }}</p>
+                <div class="p-4 sm:p-5">
+                    <h3 class="font-['Space_Grotesk'] font-medium text-sm tracking-wide">{{ related.name }}</h3>
+                    <p class="text-sm mt-1" style="color: var(--text-secondary);">${{ related.price }}</p>
                 </div>
             </a>
             {% endfor %}

@@ -25,9 +25,12 @@ class Category(models.Model):
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     image = models.ImageField(upload_to="categories/", blank=True, null=True)
     description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    orden = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = "categories"
+        ordering = ["orden", "name"]
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -61,6 +64,14 @@ class Product(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    @property
+    def nivel_stock(self):
+        if self.stock == 0:
+            return "agotado"
+        if self.stock <= 3:
+            return "bajo"
+        return "ok"
+
     def main_image(self):
         if hasattr(self, "_main_images") and self._main_images:
             return self._main_images[0]
@@ -75,9 +86,13 @@ class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(upload_to="products/")
-    is_main = models.BooleanField(default=False)  # Imagen principal
+    image = models.ImageField(upload_to="productos/galeria/")
+    is_main = models.BooleanField(default=False)
     alt_text = models.CharField(max_length=200, blank=True)
+    orden = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ["orden", "id"]
 
     def __str__(self):
         return f"{self.product.name} - Image {self.id}"

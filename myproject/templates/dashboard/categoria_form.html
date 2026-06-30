@@ -1,0 +1,92 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+{% block title %}{% if editing %}Editar{% else %}Nueva{% endif %} Categoría - Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'dashboard:categoria_list' %}" class="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+    </a>
+    <h1 class="text-2xl font-bold text-white">{% if editing %}Editar{% else %}Nueva{% endif %} Categoría</h1>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-5">
+    {% csrf_token %}
+
+    {% for error in form.non_field_errors %}
+    <div class="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">{{ error }}</div>
+    {% endfor %}
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.name.label }}</label>
+      {{ form.name }}
+      {% if form.name.errors %}
+      <p class="mt-1 text-xs text-red-400">{{ form.name.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.slug.label }}</label>
+      {{ form.slug }}
+      <p class="mt-1 text-xs text-zinc-500">Se genera automáticamente desde el nombre.</p>
+      {% if form.slug.errors %}
+      <p class="mt-1 text-xs text-red-400">{{ form.slug.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.description.label }}</label>
+      {{ form.description }}
+    </div>
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.image.label }}</label>
+      {% if form.instance.image %}
+      <div class="mb-2">
+        <img src="{{ form.instance.image.url }}" alt="Preview" class="w-24 h-24 rounded-lg object-cover bg-zinc-800">
+      </div>
+      {% endif %}
+      {{ form.image }}
+    </div>
+
+    <div class="flex items-center gap-2">
+      {{ form.is_active }}
+      <label class="text-zinc-300 text-sm font-medium">{{ form.is_active.label }}</label>
+    </div>
+
+    <div class="flex items-center gap-3 pt-2">
+      <button type="submit" class="px-6 py-2 bg-white text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors">
+        {% if editing %}Guardar cambios{% else %}Crear categoría{% endif %}
+      </button>
+      <a href="{% url 'dashboard:categoria_list' %}" class="px-4 py-2 text-zinc-400 hover:text-white transition-colors text-sm">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.querySelector('[name="name"]').addEventListener('input', function() {
+    const slugField = document.querySelector('[name="slug"]');
+    if (!slugField.dataset.userEdited) {
+      slugField.value = this.value
+        .toLowerCase()
+        .replace(/[^a-z0-9áéíóúñ\s-]/g, '')
+        .replace(/[á]/g, 'a')
+        .replace(/[é]/g, 'e')
+        .replace(/[í]/g, 'i')
+        .replace(/[ó]/g, 'o')
+        .replace(/[ú]/g, 'u')
+        .replace(/[ñ]/g, 'n')
+        .replace(/[\s-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+  });
+  document.querySelector('[name="slug"]').addEventListener('input', function() {
+    this.dataset.userEdited = 'true';
+  });
+</script>
+{% endblock %}
