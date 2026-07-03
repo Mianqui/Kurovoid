@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tienda{% endblock %}
+
+{% block content %}
+<div class="w-full px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="font-['Space_Grotesk'] text-3xl font-bold">Productos</h1>
+        <button id="mobileFilterBtn" class="lg:hidden px-4 py-2 text-sm font-medium rounded theme-accent-bg transition-opacity hover:opacity-80">
+            Filtros
+        </button>
+    </div>
+
+    {% if products %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        {% for product in products %}
+        <a href="{% url 'catalog:product_detail' product.slug %}" class="group relative overflow-hidden transition-all" style="border: 1px solid var(--border);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div class="aspect-[3/4] flex items-center justify-center" style="background-color: var(--bg-secondary);">
+                {% with main_image=product.images.all|first %}
+                <img src="{% if main_image %}{{ main_image.image.url }}{% else %}{% static 'img/producto-card.jpg' %}{% endif %}" alt="{{ main_image.alt_text|default:product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% endwith %}
+            </div>
+            <div class="p-3 sm:p-4">
+                <h3 class="font-['Space_Grotesk'] font-medium text-sm tracking-wide">{{ product.name }}</h3>
+                <p class="text-sm mt-1" style="color: var(--text-secondary);">${{ product.price }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="flex justify-center gap-2 mt-12">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 text-sm transition-all" style="border: 1px solid var(--border); color: var(--text-secondary);" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">Anterior</a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        <a href="?page={{ num }}" class="px-4 py-2 text-sm transition-all" style="{% if page_obj.number == num %}border: 1px solid var(--accent); color: var(--accent);{% else %}border: 1px solid var(--border); color: var(--text-secondary);{% endif %}" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)'" onmouseout="{% if page_obj.number == num %}{% else %}this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'{% endif %}">{{ num }}</a>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 text-sm transition-all" style="border: 1px solid var(--border); color: var(--text-secondary);" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p style="color: var(--text-secondary);">No se encontraron productos.</p>
+    {% endif %}
+</div>
+
+<script>
+document.getElementById('mobileFilterBtn')?.addEventListener('click', function() {
+    document.getElementById('sidebarToggle')?.click();
+});
+</script>
+{% endblock %}

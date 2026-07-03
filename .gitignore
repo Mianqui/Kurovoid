@@ -23,6 +23,7 @@ static/css/output.css
 # Environment
 .env
 .env.*
+!.env.example
 
 # IDE / Editors
 .vscode/

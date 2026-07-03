@@ -1,0 +1,33 @@
+from django.urls import path
+
+from . import views
+
+app_name = "dashboard"
+
+urlpatterns = [
+    path("", views.DashboardHomeView.as_view(), name="home"),
+    path("productos/", views.ProductListAdminView.as_view(), name="product_list"),
+    path("productos/nuevo/", views.ProductCreateView.as_view(), name="product_create"),
+    path("productos/editar/<int:pk>/", views.ProductUpdateView.as_view(), name="product_update"),
+    path("productos/eliminar/<int:pk>/", views.ProductDeleteView.as_view(), name="product_delete"),
+    path("ventas/", views.VentasView.as_view(), name="ventas"),
+    path("pedidos/", views.OrderListView.as_view(), name="pedido_list"),
+    path("pedidos/<int:pk>/", views.OrderDetailView.as_view(), name="pedido_detail"),
+    path("usuarios/", views.UserListView.as_view(), name="usuario_list"),
+    path("usuarios/<int:pk>/", views.UserDetailView.as_view(), name="usuario_detail"),
+    path("categorias/", views.CategoryListView.as_view(), name="categoria_list"),
+    path("categorias/nueva/", views.CategoryCreateView.as_view(), name="categoria_create"),
+    path("categorias/editar/<int:pk>/", views.CategoryUpdateView.as_view(), name="categoria_update"),
+    path("categorias/eliminar/<int:pk>/", views.CategoryDeleteView.as_view(), name="categoria_delete"),
+    path("categorias/reordenar/", views.categoria_reordenar, name="categoria_reordenar"),
+    path("categorias/toggle/<int:pk>/", views.categoria_toggle_active, name="categoria_toggle"),
+    path("alertas/", views.AlertasView.as_view(), name="alertas"),
+    path("alertas/reponer/<int:pk>/", views.producto_reponer_stock, name="reponer_stock"),
+    path("productos/<int:pk>/imagen/subir/", views.producto_subir_imagen, name="producto_subir_imagen"),
+    path("productos/imagen/<int:img_id>/eliminar/", views.producto_eliminar_imagen, name="producto_eliminar_imagen"),
+    path("productos/<int:pk>/imagen/reordenar/", views.producto_reordenar_imagenes, name="producto_reordenar_imagenes"),
+    path("productos/imagen/<int:img_id>/principal/", views.producto_imagen_principal, name="producto_imagen_principal"),
+    path("productos/imagen/<int:img_id>/alt-text/", views.producto_actualizar_alt_text, name="producto_alt_text"),
+    path("exportar/productos/", views.ExportProductosCSV, name="export_productos"),
+    path("exportar/pedidos/", views.ExportPedidosCSV, name="export_pedidos"),
+]
