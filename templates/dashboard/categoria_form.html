@@ -3,14 +3,14 @@
 {% block title %}{% if editing %}Editar{% else %}Nueva{% endif %} Categoría - Dashboard{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl">
-  <div class="flex items-center gap-3 mb-6">
-    <a href="{% url 'dashboard:categoria_list' %}" class="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+<div class="max-w-2xl mx-auto">
+  <div class="flex items-center justify-center gap-3 mb-6 relative">
+    <a href="{% url 'dashboard:categoria_list' %}" class="absolute left-0 p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
       </svg>
     </a>
-    <h1 class="text-2xl font-bold text-white">{% if editing %}Editar{% else %}Nueva{% endif %} Categoría</h1>
+    <h1 class="text-2xl font-bold text-white text-center">{% if editing %}Editar{% else %}Nueva{% endif %} Categoría</h1>
   </div>
 
   <form method="post" enctype="multipart/form-data" class="space-y-5">

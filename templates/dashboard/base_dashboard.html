@@ -39,6 +39,12 @@
                     </svg>
                     Añadir producto
                 </a>
+                <a href="{% url 'dashboard:carousel_list' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    Carrusel
+                </a>
                 <div class="pt-3 pb-1">
                     <p class="px-4 text-xs font-semibold uppercase tracking-wider text-zinc-600">Alertas</p>
                 </div>
@@ -99,16 +105,16 @@
                 </form>
             </header>
 
-            {% comment %}Mensajes flash{% endcomment %}
-            {% if messages %}
-            <div class="px-6 pt-4">
+            {% comment %}Contenedor de notificaciones en tiempo real{% endcomment %}
+            <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-3 items-center pointer-events-none w-full max-w-md px-4">
+                {% if messages %}
                 {% for message in messages %}
-                <div class="rounded-lg px-4 py-3 text-sm font-medium {% if message.tags == 'success' %}bg-emerald-950 border border-emerald-800 text-emerald-400{% elif message.tags == 'error' %}bg-red-950 border border-red-800 text-red-400{% else %}bg-zinc-800 border border-zinc-700 text-zinc-300{% endif %}">
+                <div class="toast-message rounded-lg px-4 py-3 text-sm font-medium shadow-lg transition-all duration-300 {% if message.tags == 'success' %}bg-emerald-950 border border-emerald-800 text-emerald-400{% elif message.tags == 'error' %}bg-red-950 border border-red-800 text-red-400{% else %}bg-zinc-800 border border-zinc-700 text-zinc-300{% endif %}">
                     {{ message }}
                 </div>
                 {% endfor %}
+                {% endif %}
             </div>
-            {% endif %}
 
             {% comment %}Contenido{% endcomment %}
             <main class="flex-1 p-6 overflow-auto">
@@ -116,6 +122,41 @@
             </main>
         </div>
     </div>
+    <script>
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            let classes = 'toast-message rounded-lg px-4 py-3 text-sm font-medium shadow-lg transition-all duration-300 -translate-y-4 opacity-0 pointer-events-auto ';
+            if (type === 'success') {
+                classes += 'bg-emerald-950 border border-emerald-800 text-emerald-400';
+            } else if (type === 'error') {
+                classes += 'bg-red-950 border border-red-800 text-red-400';
+            } else {
+                classes += 'bg-zinc-800 border border-zinc-700 text-zinc-300';
+            }
+            toast.className = classes;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.classList.remove('-translate-y-4', 'opacity-0');
+            });
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Auto-hide existing django messages
+        document.querySelectorAll('.toast-message').forEach(toast => {
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

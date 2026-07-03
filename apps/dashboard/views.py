@@ -14,14 +14,17 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView, TemplateView, CreateView, UpdateView, DeleteView
 
-from catalog.models import Category as CategoryModel, Product, ProductImage
+from catalog.models import Category as CategoryModel, Product, ProductImage, CarouselImage
 from orders.models import Pedido, PedidoItem
 
 from .forms.category import CategoryForm
 
+from .forms.category import CategoryForm
 from .forms.product import ProductForm
+from .forms.carousel import CarouselImageForm
 
-decorators = [login_required, staff_member_required]
+from django.conf import settings
+decorators = [login_required, staff_member_required(login_url=settings.LOGIN_URL)]
 
 
 @method_decorator(decorators, name="dispatch")
@@ -395,7 +398,7 @@ class UserDetailView(SuperUserRequiredMixin, DetailView):
         return redirect("dashboard:usuario_detail", pk=user_obj.id)
 
 
-@method_decorator([login_required, staff_member_required], name="dispatch")
+@method_decorator([login_required, staff_member_required(login_url=settings.LOGIN_URL)], name="dispatch")
 class CategoryListView(ListView):
     model = CategoryModel
     template_name = "dashboard/categoria_list.html"
@@ -409,7 +412,7 @@ class CategoryListView(ListView):
         return context
 
 
-@method_decorator([login_required, staff_member_required], name="dispatch")
+@method_decorator([login_required, staff_member_required(login_url=settings.LOGIN_URL)], name="dispatch")
 class CategoryCreateView(CreateView):
     model = CategoryModel
     form_class = CategoryForm
@@ -421,7 +424,7 @@ class CategoryCreateView(CreateView):
         return super().form_valid(form)
 
 
-@method_decorator([login_required, staff_member_required], name="dispatch")
+@method_decorator([login_required, staff_member_required(login_url=settings.LOGIN_URL)], name="dispatch")
 class CategoryUpdateView(UpdateView):
     model = CategoryModel
     form_class = CategoryForm
@@ -440,7 +443,7 @@ class CategoryUpdateView(UpdateView):
         return context
 
 
-@method_decorator([login_required, staff_member_required], name="dispatch")
+@method_decorator([login_required, staff_member_required(login_url=settings.LOGIN_URL)], name="dispatch")
 class CategoryDeleteView(DeleteView):
     model = CategoryModel
     template_name = "dashboard/categoria_confirm_delete.html"
@@ -465,7 +468,7 @@ class CategoryDeleteView(DeleteView):
 
 @require_POST
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def categoria_reordenar(request):
     import json
     data = json.loads(request.body)
@@ -477,7 +480,7 @@ def categoria_reordenar(request):
 
 @require_POST
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def categoria_toggle_active(request, pk):
     cat = get_object_or_404(CategoryModel, id=pk)
     cat.is_active = not cat.is_active
@@ -485,7 +488,7 @@ def categoria_toggle_active(request, pk):
     return JsonResponse({"success": True, "is_active": cat.is_active})
 
 
-@method_decorator([login_required, staff_member_required], name="dispatch")
+@method_decorator([login_required, staff_member_required(login_url=settings.LOGIN_URL)], name="dispatch")
 class AlertasView(ListView):
     model = Product
     template_name = "dashboard/alertas.html"
@@ -509,7 +512,7 @@ class AlertasView(ListView):
 
 @require_POST
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def producto_reponer_stock(request, pk):
     import json
     data = json.loads(request.body)
@@ -527,7 +530,7 @@ def producto_reponer_stock(request, pk):
 
 
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def producto_subir_imagen(request, pk):
     producto = get_object_or_404(Product, id=pk)
     if producto.images.count() >= 10:
@@ -553,7 +556,7 @@ def producto_subir_imagen(request, pk):
 
 
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def producto_eliminar_imagen(request, img_id):
     img = get_object_or_404(ProductImage, id=img_id)
     img.delete()
@@ -562,7 +565,7 @@ def producto_eliminar_imagen(request, img_id):
 
 @require_POST
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def producto_reordenar_imagenes(request, pk):
     import json
     data = json.loads(request.body)
@@ -574,7 +577,7 @@ def producto_reordenar_imagenes(request, pk):
 
 @require_POST
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def producto_imagen_principal(request, img_id):
     img = get_object_or_404(ProductImage, id=img_id)
     ProductImage.objects.filter(product=img.product, is_main=True).update(is_main=False)
@@ -584,7 +587,7 @@ def producto_imagen_principal(request, img_id):
 
 
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def producto_actualizar_alt_text(request, img_id):
     import json
     data = json.loads(request.body)
@@ -601,7 +604,7 @@ from django.http import HttpResponse
 
 
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def ExportProductosCSV(request):
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="productos.csv"'
@@ -621,7 +624,7 @@ def ExportProductosCSV(request):
 
 
 @login_required
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def ExportPedidosCSV(request):
     desde = request.GET.get("desde")
     hasta = request.GET.get("hasta")
@@ -644,3 +647,40 @@ def ExportPedidosCSV(request):
             pedido.creado_en.strftime("%Y-%m-%d"),
         ])
     return response
+
+
+@method_decorator(decorators, name="dispatch")
+class CarouselListView(ListView):
+    model = CarouselImage
+    template_name = "dashboard/carousel_list.html"
+    context_object_name = "images"
+
+@method_decorator(decorators, name="dispatch")
+class CarouselCreateView(CreateView):
+    model = CarouselImage
+    form_class = CarouselImageForm
+    template_name = "dashboard/carousel_form.html"
+    success_url = reverse_lazy("dashboard:carousel_list")
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["editing"] = False
+        return ctx
+
+@method_decorator(decorators, name="dispatch")
+class CarouselUpdateView(UpdateView):
+    model = CarouselImage
+    form_class = CarouselImageForm
+    template_name = "dashboard/carousel_form.html"
+    success_url = reverse_lazy("dashboard:carousel_list")
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["editing"] = True
+        return ctx
+
+@method_decorator(decorators, name="dispatch")
+class CarouselDeleteView(DeleteView):
+    model = CarouselImage
+    template_name = "dashboard/carousel_confirm_delete.html"
+    success_url = reverse_lazy("dashboard:carousel_list")

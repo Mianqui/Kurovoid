@@ -1,0 +1,75 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}{% if editing %}Editar{% else %}Nueva{% endif %} Imagen de Carrusel{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="flex items-center justify-center gap-3 mb-6 relative">
+    <a href="{% url 'dashboard:carousel_list' %}" class="absolute left-0 p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+    </a>
+    <h1 class="text-2xl font-bold text-white text-center">{% if editing %}Editar{% else %}Nueva{% endif %} Imagen de Carrusel</h1>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-5">
+    {% csrf_token %}
+
+    {% for error in form.non_field_errors %}
+    <div class="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">{{ error }}</div>
+    {% endfor %}
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">Imagen</label>
+      {% if form.instance.image %}
+      <div class="mb-2">
+        <img src="{{ form.instance.image.url }}" alt="Preview" class="h-24 rounded-lg object-cover bg-zinc-800">
+      </div>
+      {% endif %}
+      {{ form.image }}
+      {% if form.image.errors %}
+      <p class="mt-1 text-xs text-red-400">{{ form.image.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.title.label }}</label>
+      {{ form.title }}
+      {% if form.title.errors %}
+      <p class="mt-1 text-xs text-red-400">{{ form.title.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.link.label }}</label>
+      {{ form.link }}
+      <p class="mt-1 text-xs text-zinc-500">{{ form.link.help_text }}</p>
+      {% if form.link.errors %}
+      <p class="mt-1 text-xs text-red-400">{{ form.link.errors.0 }}</p>
+      {% endif %}
+    </div>
+    
+    <div>
+      <label class="block text-zinc-300 text-sm font-medium mb-1.5">{{ form.order.label }}</label>
+      {{ form.order }}
+      {% if form.order.errors %}
+      <p class="mt-1 text-xs text-red-400">{{ form.order.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div class="flex items-center gap-2">
+      {{ form.is_active }}
+      <label class="text-zinc-300 text-sm font-medium">{{ form.is_active.label }}</label>
+    </div>
+
+    <div class="flex items-center gap-3 pt-2">
+      <button type="submit" class="px-6 py-2 bg-white text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors">
+        {% if editing %}Guardar cambios{% else %}Subir imagen{% endif %}
+      </button>
+      <a href="{% url 'dashboard:carousel_list' %}" class="px-4 py-2 text-zinc-400 hover:text-white transition-colors text-sm">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

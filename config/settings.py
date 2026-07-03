@@ -112,6 +112,6 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@kurovoid.com")
 
 # Autenticación
-LOGIN_URL = "/login/"
+LOGIN_URL = "/auth-admin-x9k2/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"
-LOGOUT_REDIRECT_URL = "/login/"
+LOGOUT_REDIRECT_URL = "/auth-admin-x9k2/login/"

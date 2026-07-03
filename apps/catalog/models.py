@@ -96,3 +96,18 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - Image {self.id}"
+
+
+class CarouselImage(models.Model):
+    image = models.ImageField(upload_to="carousel/")
+    title = models.CharField(max_length=200, blank=True)
+    link = models.URLField(blank=True, null=True, help_text="Opcional: enlace al hacer click")
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["order", "-created_at"]
+
+    def __str__(self):
+        return self.title or f"Carrusel Imagen {self.id}"

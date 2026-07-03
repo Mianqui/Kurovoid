@@ -4,16 +4,14 @@ from django.contrib import admin
 from django.urls import include, path
 
 from catalog.views import HomeView
-from users.views import cuenta_view
 
 # Rutas principales del proyecto
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),               # Página de inicio
-    path("", include("users.urls")),                         # Login /logout en /login/ /logout/
-    path("cuenta/", cuenta_view, name="cuenta"),             # Perfil de usuario
+    path("auth-admin-x9k2/", include("users.urls")),         # Auth (solo admin)
     path("kurovoid-secret-admin/", admin.site.urls),         # Panel admin Django
     path("tienda/", include("catalog.urls")),                # Catálogo de productos
-    path("pedidos/", include("orders.urls")),                # Carrito y pedidos
+    path("pedidos/", include("orders.urls")),                # Carrito (oculto, futuro)
     path("dashboard/", include("dashboard.urls")),           # Panel staff/superuser
 ]
 

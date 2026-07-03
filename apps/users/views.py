@@ -21,7 +21,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LogoutView):
-    next_page = "/login/"
+    next_page = reverse_lazy("users:login")
 
 
 class RegisterView(CreateView):

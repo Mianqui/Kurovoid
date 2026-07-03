@@ -30,4 +30,8 @@ urlpatterns = [
     path("productos/imagen/<int:img_id>/alt-text/", views.producto_actualizar_alt_text, name="producto_alt_text"),
     path("exportar/productos/", views.ExportProductosCSV, name="export_productos"),
     path("exportar/pedidos/", views.ExportPedidosCSV, name="export_pedidos"),
+    path("carrusel/", views.CarouselListView.as_view(), name="carousel_list"),
+    path("carrusel/nueva/", views.CarouselCreateView.as_view(), name="carousel_create"),
+    path("carrusel/editar/<int:pk>/", views.CarouselUpdateView.as_view(), name="carousel_update"),
+    path("carrusel/eliminar/<int:pk>/", views.CarouselDeleteView.as_view(), name="carousel_delete"),
 ]
