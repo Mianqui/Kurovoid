@@ -41,8 +41,8 @@
             [data-theme="light"] .theme-logo-white { display: none; }
             [data-theme="light"] .theme-logo-black { display: inline-block; }
         </style>
-        <img src="{% static 'img/tipografia_kurovoid_negativa.png' %}" alt="KUROVOID" class="theme-logo-white h-12 sm:h-16 md:h-20 mx-auto object-contain">
-        <img src="{% static 'img/tipografia_kurovoid.png' %}" alt="KUROVOID" class="theme-logo-black h-12 sm:h-16 md:h-20 mx-auto object-contain">
+        <img src="{% static 'img/tipografia_kurovoid_negativa.png' %}" alt="KUROVOID" class="theme-logo-white mx-auto object-contain w-auto" style="height: clamp(3rem, 8vw, 5rem);">
+        <img src="{% static 'img/tipografia_kurovoid.png' %}" alt="KUROVOID" class="theme-logo-black mx-auto object-contain w-auto" style="height: clamp(3rem, 8vw, 5rem);">
         <p class="mt-4 text-lg sm:text-xl max-w-lg mx-auto" style="color: var(--text-secondary);">Ropa con identidad. Hecha para los que rompen el molde.</p>
         <div class="mt-8 flex items-center justify-center gap-4">
             <a href="{% url 'catalog:product_list' %}" class="inline-block px-8 py-3 text-sm font-medium tracking-wider theme-accent-bg transition-opacity hover:opacity-80">
