@@ -2,7 +2,7 @@ from django.db.models import Min, Max
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView, TemplateView
 
-from .models import Category, Color, Product, Size
+from .models import Category, Color, Product, Size, CarouselImage
 
 
 # Lista de productos con filtros y paginación
@@ -20,6 +20,16 @@ class ProductListView(ListView):
         color_name = self.request.GET.get("color")
         min_price = self.request.GET.get("min_price")
         max_price = self.request.GET.get("max_price")
+        # Filtro de favoritos (IDs enviados desde cookie via JS)
+        fav_ids = self.request.GET.get("fav_ids")
+        if self.request.GET.get("favs") and fav_ids:
+            try:
+                ids = [int(i) for i in fav_ids.split(",") if i.strip()]
+                qs = qs.filter(id__in=ids)
+            except (ValueError, TypeError):
+                pass
+        elif self.request.GET.get("favs"):
+            qs = qs.none()
         if category_slug:
             qs = qs.filter(category__slug=category_slug)
         if size_name:
@@ -122,4 +132,5 @@ class HomeView(TemplateView):
         context["new_products"] = Product.objects.filter(is_active=True).order_by(
             "-created_at"
         )[:8]
+        context["carousel_images"] = CarouselImage.objects.filter(is_active=True)
         return context
