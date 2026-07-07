@@ -1,16 +1,18 @@
+# Compose para DESARROLLO local
+# Uso: docker compose -f compose.dev.yml up --build
 services:
   web:
     build: .
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
     env_file:
       - .env
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - app_media:/app/media
-    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
 
   db:
     image: postgres:16
@@ -21,14 +23,12 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata_dev:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
 volumes:
-  pgdata:
-  app_media:
+  pgdata_dev:
